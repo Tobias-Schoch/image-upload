@@ -170,17 +170,17 @@ router.get('/:uploadId/file/:filePath+', (req, res) => {
   }
 
   const relativePath = Array.isArray(filePath) ? filePath.join('/') : filePath
-  const filePath = path.resolve(path.join(uploadsDir, uploadId, relativePath))
+  const absPath = path.resolve(path.join(uploadsDir, uploadId, relativePath))
 
-  if (!filePath.startsWith(path.resolve(uploadsDir))) {
+  if (!absPath.startsWith(path.resolve(uploadsDir))) {
     return res.status(400).json({ error: 'Invalid path' })
   }
 
-  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+  if (!fs.existsSync(absPath) || fs.statSync(absPath).isDirectory()) {
     return res.status(404).json({ error: 'File not found' })
   }
 
-  res.download(filePath)
+  res.download(absPath)
 })
 
 // GET /api/upload/:uploadId/zip — Download all files as ZIP
