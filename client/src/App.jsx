@@ -19,6 +19,7 @@ export default function App() {
     handleDragOver,
     handleDragLeave,
     handleDrop,
+    handleFolderSelect,
     reset: resetDrop,
   } = useFolderDrop()
 
@@ -80,6 +81,7 @@ export default function App() {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
+                  onFolderSelect={handleFolderSelect}
                 />
                 {dropError && (
                   <motion.div

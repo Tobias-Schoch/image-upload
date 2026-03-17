@@ -1,16 +1,43 @@
+import { useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, FolderOpen } from 'lucide-react'
 
-export default function DropZone({ isDragOver, onDragOver, onDragLeave, onDrop }) {
+export default function DropZone({ isDragOver, onDragOver, onDragLeave, onDrop, onFolderSelect }) {
+  const inputRef = useRef(null)
+
+  const handleClick = () => {
+    inputRef.current?.click()
+  }
+
+  const handleInputChange = (e) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
+      onFolderSelect(files)
+    }
+    // Reset so the same folder can be selected again
+    e.target.value = ''
+  }
+
   return (
     <motion.div
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
+      onClick={handleClick}
       className="relative cursor-pointer select-none"
       animate={isDragOver ? { scale: 1.02 } : { scale: 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
+      <input
+        ref={inputRef}
+        type="file"
+        className="hidden"
+        webkitdirectory=""
+        directory=""
+        multiple
+        onChange={handleInputChange}
+      />
+
       {/* Glow effect */}
       <AnimatePresence>
         {isDragOver && (
@@ -52,7 +79,7 @@ export default function DropZone({ isDragOver, onDragOver, onDragLeave, onDrop }
             {isDragOver ? 'Loslassen zum Hochladen' : 'Ordner hierher ziehen'}
           </motion.p>
           <p className="text-sm text-white/40 mt-2">
-            Ordner mit Bildern und Videos werden unterstützt
+            oder klicken um Ordner auszuwählen
           </p>
         </div>
       </div>

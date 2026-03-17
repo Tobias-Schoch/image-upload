@@ -104,6 +104,68 @@ export function useFolderDrop() {
     })
   }, [])
 
+  // Handle files from native folder picker (<input webkitdirectory>)
+  const handleFolderSelect = useCallback((inputFiles) => {
+    setError(null)
+
+    if (inputFiles.length === 0) {
+      setError('Der Ordner ist leer.')
+      return
+    }
+
+    // Build tree from webkitRelativePath
+    const rootName = inputFiles[0].webkitRelativePath.split('/')[0] || 'Dateien'
+    const root = { name: rootName, path: rootName, isDirectory: true, children: [], file: null }
+
+    const flatFiles = []
+
+    for (const file of inputFiles) {
+      const parts = file.webkitRelativePath.split('/')
+      flatFiles.push({ file, relativePath: file.webkitRelativePath })
+
+      // Build tree nodes
+      let current = root
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i]
+        const isLast = i === parts.length - 1
+        const pathSoFar = parts.slice(0, i + 1).join('/')
+
+        if (isLast) {
+          current.children.push({
+            name: part,
+            path: pathSoFar,
+            isDirectory: false,
+            children: [],
+            file,
+          })
+        } else {
+          let dir = current.children.find((c) => c.isDirectory && c.name === part)
+          if (!dir) {
+            dir = { name: part, path: pathSoFar, isDirectory: true, children: [], file: null }
+            current.children.push(dir)
+          }
+          current = dir
+        }
+      }
+    }
+
+    // Sort children: folders first, then alphabetically
+    const sortTree = (node) => {
+      if (node.children) {
+        node.children.sort((a, b) => {
+          if (a.isDirectory !== b.isDirectory) return a.isDirectory ? -1 : 1
+          return a.name.localeCompare(b.name)
+        })
+        node.children.forEach(sortTree)
+      }
+    }
+    sortTree(root)
+
+    setTree(root)
+    setFiles(flatFiles)
+    setFolderName(rootName)
+  }, [])
+
   const reset = useCallback(() => {
     setTree(null)
     setFiles([])
@@ -120,6 +182,7 @@ export function useFolderDrop() {
     handleDragOver,
     handleDragLeave,
     handleDrop,
+    handleFolderSelect,
     reset,
   }
 }
