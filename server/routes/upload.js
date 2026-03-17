@@ -16,6 +16,33 @@ router.post('/init', (req, res) => {
   res.json({ uploadId })
 })
 
+// GET /api/upload/sessions — List all upload sessions
+router.get('/sessions', (req, res) => {
+  if (!fs.existsSync(uploadsDir)) {
+    return res.json([])
+  }
+
+  const entries = fs.readdirSync(uploadsDir, { withFileTypes: true })
+  const sessions = []
+
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !/^[0-9a-f-]{36}$/.test(entry.name)) continue
+
+    const metadataPath = path.join(uploadsDir, entry.name, 'metadata.json')
+    if (!fs.existsSync(metadataPath)) continue
+
+    try {
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'))
+      sessions.push(metadata)
+    } catch {
+      // skip corrupted metadata
+    }
+  }
+
+  sessions.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+  res.json(sessions)
+})
+
 // POST /api/upload/:uploadId/file — Upload a single file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -106,33 +133,6 @@ router.post('/:uploadId/complete', (req, res) => {
   )
 
   res.json(metadata)
-})
-
-// GET /api/upload/sessions — List all upload sessions
-router.get('/sessions', (req, res) => {
-  if (!fs.existsSync(uploadsDir)) {
-    return res.json([])
-  }
-
-  const entries = fs.readdirSync(uploadsDir, { withFileTypes: true })
-  const sessions = []
-
-  for (const entry of entries) {
-    if (!entry.isDirectory() || !/^[0-9a-f-]{36}$/.test(entry.name)) continue
-
-    const metadataPath = path.join(uploadsDir, entry.name, 'metadata.json')
-    if (!fs.existsSync(metadataPath)) continue
-
-    try {
-      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'))
-      sessions.push(metadata)
-    } catch {
-      // skip corrupted metadata
-    }
-  }
-
-  sessions.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
-  res.json(sessions)
 })
 
 // GET /api/upload/:uploadId/files — List all files in a session

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Download, FileArchive, File, Image, Film, Music, FileText, Loader2 } from 'lucide-react'
 import axios from 'axios'
 
-const API = 'http://localhost:3002/api/upload'
+const API = '/api/upload'
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`

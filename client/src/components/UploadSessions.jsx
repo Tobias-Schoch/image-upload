@@ -4,7 +4,7 @@ import { FolderOpen, FileArchive, Loader2 } from 'lucide-react'
 import axios from 'axios'
 import SessionModal from './SessionModal'
 
-const API = 'http://localhost:3002/api/upload'
+const API = '/api/upload'
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`
