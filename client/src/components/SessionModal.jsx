@@ -132,7 +132,7 @@ export default function SessionModal({ session, onClose }) {
                   <img
                     src={`${API}/${session.uploadId}/file/${encodeURIComponent(preview)}`}
                     alt={preview}
-                    className="max-h-64 rounded-lg object-contain"
+                    className="h-[200px] w-auto rounded-lg"
                   />
                 </div>
               </motion.div>
