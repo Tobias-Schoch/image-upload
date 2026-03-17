@@ -73,14 +73,16 @@ router.post('/:uploadId/complete', (req, res) => {
     return res.status(404).json({ error: 'Upload not found' })
   }
 
-  // Count files recursively
+  // Count files recursively and find folder name
   let totalFiles = 0
   let totalSize = 0
+  let folderName = null
   function countFiles(dir) {
     const entries = fs.readdirSync(dir, { withFileTypes: true })
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name)
       if (entry.isDirectory()) {
+        if (!folderName) folderName = entry.name
         countFiles(fullPath)
       } else if (entry.name !== 'metadata.json') {
         totalFiles++
@@ -93,6 +95,7 @@ router.post('/:uploadId/complete', (req, res) => {
   // Write metadata
   const metadata = {
     uploadId,
+    folderName: req.body.folderName || folderName || uploadId,
     totalFiles,
     totalSize,
     completedAt: new Date().toISOString(),

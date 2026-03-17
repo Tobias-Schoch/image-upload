@@ -40,7 +40,7 @@ export default function App() {
   const totalSize = files.reduce((sum, { file }) => sum + file.size, 0)
 
   const handleUpload = () => {
-    upload(files)
+    upload(files, folderName)
   }
 
   const handleReset = () => {

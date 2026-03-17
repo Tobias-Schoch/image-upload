@@ -11,7 +11,7 @@ export function useUpload() {
   const [uploadError, setUploadError] = useState(null)
   const cancelRef = useRef(null)
 
-  const upload = useCallback(async (files) => {
+  const upload = useCallback(async (files, folderName) => {
     setPhase('uploading')
     setUploadError(null)
 
@@ -75,7 +75,7 @@ export function useUpload() {
       await Promise.all(workers)
 
       // Step 3: Complete
-      const { data: completeData } = await axios.post(`/api/upload/${uploadId}/complete`)
+      const { data: completeData } = await axios.post(`/api/upload/${uploadId}/complete`, { folderName })
       setUploadResult(completeData)
       setOverallProgress(100)
       setPhase('complete')

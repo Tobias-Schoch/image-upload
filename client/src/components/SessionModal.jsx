@@ -90,7 +90,7 @@ export default function SessionModal({ session, onClose }) {
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
             <div>
-              <h2 className="text-lg font-semibold text-white/90">Upload Details</h2>
+              <h2 className="text-lg font-semibold text-white/90">{session.folderName || 'Upload'}</h2>
               <p className="text-xs text-white/35 mt-0.5">
                 {session.totalFiles} {session.totalFiles === 1 ? 'Datei' : 'Dateien'} &middot; {formatSize(session.totalSize)}
                 &middot; {new Date(session.completedAt).toLocaleDateString('de-CH')}

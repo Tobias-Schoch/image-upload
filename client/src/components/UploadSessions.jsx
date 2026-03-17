@@ -73,14 +73,18 @@ export default function UploadSessions({ refreshTrigger }) {
                 <FolderOpen className="w-4 h-4 text-violet-400/60" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-white/70 font-medium">
+                <span className="text-sm text-white/70 font-medium truncate block">
+                  {session.folderName || 'Upload'}
+                </span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs text-white/30">
                     {session.totalFiles} {session.totalFiles === 1 ? 'Datei' : 'Dateien'}
                   </span>
-                  <span className="text-xs text-white/25">&middot;</span>
-                  <span className="text-xs text-white/30">{formatSize(session.totalSize)}</span>
+                  <span className="text-xs text-white/20">&middot;</span>
+                  <span className="text-xs text-white/25">{formatSize(session.totalSize)}</span>
+                  <span className="text-xs text-white/20">&middot;</span>
+                  <span className="text-xs text-white/25">{timeAgo(session.completedAt)}</span>
                 </div>
-                <p className="text-xs text-white/25 mt-0.5">{timeAgo(session.completedAt)}</p>
               </div>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                 <FileArchive className="w-4 h-4 text-white/20" />
