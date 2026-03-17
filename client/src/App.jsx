@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AlertCircle, RotateCcw } from 'lucide-react'
 import Background from './components/Background'
@@ -6,6 +7,7 @@ import FileTree from './components/FileTree'
 import FilePreview from './components/FilePreview'
 import UploadProgress from './components/UploadProgress'
 import UploadComplete from './components/UploadComplete'
+import UploadSessions from './components/UploadSessions'
 import { useFolderDrop } from './hooks/useFolderDrop'
 import { useUpload } from './hooks/useUpload'
 
@@ -33,6 +35,8 @@ export default function App() {
     reset: resetUpload,
   } = useUpload()
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
   const totalSize = files.reduce((sum, { file }) => sum + file.size, 0)
 
   const handleUpload = () => {
@@ -42,6 +46,7 @@ export default function App() {
   const handleReset = () => {
     resetDrop()
     resetUpload()
+    setRefreshTrigger(t => t + 1)
   }
 
   // State machine: idle → ready → uploading → complete/error
@@ -186,6 +191,9 @@ export default function App() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Upload history */}
+          <UploadSessions refreshTrigger={refreshTrigger} />
         </div>
       </div>
     </>
