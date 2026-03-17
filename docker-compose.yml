@@ -1,0 +1,17 @@
+services:
+  client:
+    build: ./client
+    ports:
+      - "3003:80"
+    depends_on:
+      - server
+
+  server:
+    build: ./server
+    volumes:
+      - uploads:/app/uploads
+    expose:
+      - "3002"
+
+volumes:
+  uploads:
