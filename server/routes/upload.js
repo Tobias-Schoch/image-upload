@@ -163,7 +163,7 @@ router.get('/:uploadId/files', (req, res) => {
 })
 
 // GET /api/upload/:uploadId/file/* — Download a single file
-router.get('/:uploadId/file/:filePath+', (req, res) => {
+router.get('/:uploadId/file/{*filePath}', (req, res) => {
   const { uploadId, filePath } = req.params
   if (!/^[0-9a-f-]{36}$/.test(uploadId)) {
     return res.status(400).json({ error: 'Invalid upload ID' })
