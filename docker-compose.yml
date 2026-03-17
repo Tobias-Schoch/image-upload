@@ -9,9 +9,6 @@ services:
   server:
     build: ./server
     volumes:
-      - uploads:/app/uploads
+      - /root/uploads:/app/uploads
     expose:
       - "3002"
-
-volumes:
-  uploads:
